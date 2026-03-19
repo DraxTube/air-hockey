@@ -16,7 +16,7 @@ CFLAGS	:= $(ARCH) -O2 -g -Wall \
 
 LDFLAGS	:= $(ARCH) -g -specs=$(DEVKITPRO)/calico/share/ds9.specs
 
-# Il nome corretto è libcalico_ds9.a, quindi -lcalico_ds9
+# Ordine importante: nds9 dipende da calico_ds9
 LIBS	:= -lnds9 -lcalico_ds9 -lm
 LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
 
