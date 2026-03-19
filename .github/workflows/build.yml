@@ -12,8 +12,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install NDS dependencies
-        run: |
-          dkp-pacman -Sy --noconfirm calico libnds
+        run: dkp-pacman -Sy --noconfirm calico libnds
+
+      - name: Debug - List calico files
+        run: find /opt/devkitpro/calico -type f | sort
 
       - name: Build
         run: make
