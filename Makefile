@@ -16,8 +16,8 @@ CFLAGS	:= $(ARCH) -O2 -g -Wall \
 
 LDFLAGS	:= $(ARCH) -g -specs=$(DEVKITPRO)/calico/share/ds9.specs
 
-# Rimosso -lcalico: lo specs file ds9.specs lo linka automaticamente
-LIBS	:= -lnds9 -lm
+# Il nome corretto è libcalico_ds9.a, quindi -lcalico_ds9
+LIBS	:= -lnds9 -lcalico_ds9 -lm
 LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
 
 vpath %.c $(SOURCES)
