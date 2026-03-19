@@ -9,18 +9,18 @@ TARGET		:= airhockey
 BUILD		:= build
 SOURCES		:= source
 
-# Added calico include paths and specs to resolve modern libnds errors
+# Updated for libnds v2 (Calico)
 CFLAGS		:= -g -Wall -O2 \
-			   -specs=ds_arm9.specs \
+			   -specs=ds9.specs \
 			   -march=armv5te -mtune=arm946e-s -mthumb -mthumb-interwork \
 			   -I$(DEVKITPRO)/calico/include \
 			   -I$(DEVKITPRO)/libnds/include \
 			   -DARM9 -D__NDS__
 
-LDFLAGS		:= -specs=ds_arm9.specs -g \
+LDFLAGS		:= -specs=ds9.specs -g \
 			   -mthumb -mthumb-interwork
 
-LIBS		:= -lnds9 -lm
+LIBS		:= -lnds9 -lcalico -lm
 LIBDIRS		:= $(DEVKITPRO)/libnds $(DEVKITPRO)/calico
 
 vpath %.c $(SOURCES)
