@@ -16,7 +16,6 @@ CFLAGS	:= $(ARCH) -O2 -g -Wall \
 
 LDFLAGS	:= $(ARCH) -g -specs=$(DEVKITPRO)/calico/share/ds9.specs
 
-# Ordine importante: nds9 dipende da calico_ds9
 LIBS	:= -lnds9 -lcalico_ds9 -lm
 LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
 
@@ -25,13 +24,15 @@ vpath %.c $(SOURCES)
 CFILES		:= $(wildcard $(SOURCES)/*.c)
 OFILES		:= $(patsubst $(SOURCES)/%.c, $(BUILD)/%.o, $(CFILES))
 
+ARM7_EXE	:= $(DEVKITPRO)/calico/bin/ds7_ragdoll.elf
+
 all: $(TARGET).nds
 
 %.arm9: %.elf
 	$(OBJCOPY) -O binary $< $@
 
-$(TARGET).nds: $(TARGET).arm9
-	ndstool -c $@ -9 $<
+$(TARGET).nds: $(TARGET).arm9 $(ARM7_EXE)
+	ndstool -c $@ -9 $(TARGET).arm9 -7 $(ARM7_EXE)
 
 $(TARGET).elf: $(OFILES)
 	$(CC) $(LDFLAGS) $(OFILES) $(addprefix -L,$(LIBDIRS)) $(LIBS) -o $@
