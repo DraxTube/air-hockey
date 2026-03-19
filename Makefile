@@ -11,12 +11,13 @@ SOURCES		:= source
 ARCH	:= -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
 CFLAGS	:= $(ARCH) -O2 -g -Wall \
 		   -I$(DEVKITPRO)/libnds/include \
+		   -I$(DEVKITPRO)/calico/include \
 		   -DARM9 -D__NDS__
 
-LDFLAGS	:= $(ARCH) -g -specs=ds_arm9.specs
+LDFLAGS	:= $(ARCH) -g -specs=$(DEVKITPRO)/calico/share/ds9.specs
 
-LIBS	:= -lnds9 -lm
-LIBDIRS	:= $(DEVKITPRO)/libnds/lib
+LIBS	:= -lnds9 -lcalico -lm
+LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
 
 vpath %.c $(SOURCES)
 
