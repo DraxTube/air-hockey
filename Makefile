@@ -1,30 +1,29 @@
-ifeq ($(strip $(DEVKITARM)),)
-$(warning "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
-DEVKITARM := /opt/devkitpro/devkitARM
+ifeq ($(strip $(DEVKITPRO)),)
+$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPro")
 endif
 
-include $(DEVKITARM)/ds_rules
+include $(DEVKITPRO)/devkitARM/ds_rules
 
 TARGET		:= airhockey
 BUILD		:= build
 SOURCES		:= source
 
-# Updated for libnds v2 (Calico)
-CFLAGS		:= -g -Wall -O2 \
-			   -specs=ds9.specs \
-			   -march=armv5te -mtune=arm946e-s -mthumb -mthumb-interwork \
-			   -I$(DEVKITPRO)/calico/include \
-			   -I$(DEVKITPRO)/libnds/include \
-			   -DARM9 -D__NDS__
+# Modern libnds v2 (Calico) configuration
+# Note: Specs should NOT be in CFLAGS to avoid 'cannot read spec file' errors during compilation
+ARCH	:= -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
+CFLAGS	:= $(ARCH) -O2 -g -Wall \
+		   -I$(DEVKITPRO)/libnds/include \
+		   -I$(DEVKITPRO)/calico/include \
+		   -DARM9 -D__NDS__
 
-LDFLAGS		:= -specs=ds9.specs -g \
-			   -mthumb -mthumb-interwork
+# Linker flags: use the full path to ds9.specs provided by Calico
+LDFLAGS	:= $(ARCH) -g -specs=/opt/devkitpro/calico/share/ds9.specs
 
-LIBS		:= -lnds9 -lcalico -lm
-LIBDIRS		:= $(DEVKITPRO)/libnds $(DEVKITPRO)/calico
+# Correct library link order: libnds9 depends on libcalico
+LIBS	:= -lnds9 -lcalico -lm
+LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
 
 vpath %.c $(SOURCES)
-vpath %.cpp $(SOURCES)
 
 CFILES		:= $(wildcard $(SOURCES)/*.c)
 OFILES		:= $(patsubst $(SOURCES)/%.c, $(BUILD)/%.o, $(CFILES))
@@ -38,7 +37,7 @@ $(TARGET).nds: $(TARGET).arm9
 	ndstool -c $@ -9 $<
 
 $(TARGET).elf: $(OFILES)
-	$(CC) $(LDFLAGS) $(OFILES) -L$(DEVKITPRO)/libnds/lib -L$(DEVKITPRO)/calico/lib $(LIBS) -o $@
+	$(CC) $(LDFLAGS) $(OFILES) $(addprefix -L,$(LIBDIRS)) $(LIBS) -o $@
 
 $(BUILD)/%.o: %.c
 	@mkdir -p $(BUILD)
