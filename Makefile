@@ -8,20 +8,15 @@ TARGET		:= airhockey
 BUILD		:= build
 SOURCES		:= source
 
-# Modern libnds v2 (Calico) configuration
-# Note: Specs should NOT be in CFLAGS to avoid 'cannot read spec file' errors during compilation
 ARCH	:= -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
 CFLAGS	:= $(ARCH) -O2 -g -Wall \
 		   -I$(DEVKITPRO)/libnds/include \
-		   -I$(DEVKITPRO)/calico/include \
 		   -DARM9 -D__NDS__
 
-# Linker flags: use the full path to ds9.specs provided by Calico
-LDFLAGS	:= $(ARCH) -g -specs=/opt/devkitpro/calico/share/ds9.specs
+LDFLAGS	:= $(ARCH) -g -specs=ds_arm9.specs
 
-# Correct library link order: libnds9 depends on libcalico
-LIBS	:= -lnds9 -lcalico -lm
-LIBDIRS	:= $(DEVKITPRO)/libnds/lib $(DEVKITPRO)/calico/lib
+LIBS	:= -lnds9 -lm
+LIBDIRS	:= $(DEVKITPRO)/libnds/lib
 
 vpath %.c $(SOURCES)
 
